@@ -21,16 +21,17 @@
       devShells = forAllSystems (system:
       let
         pkgs = mkPkgs system;
+        cc = pkgs.gcc13;
       in
       {
-        default = pkgs.mkShell {
-          packages = with pkgs; [
-            cargo
-            rustc
-            rustfmt
-            clippy
-            gcc
-            gnumake
+        default = (pkgs.mkShell.override { stdenv = pkgs.gcc13Stdenv; }) {
+          packages = [
+            pkgs.cargo
+            pkgs.rustc
+            pkgs.rustfmt
+            pkgs.clippy
+            cc
+            pkgs.gnumake
           ];
 
           UVM_HOME = "${uvm12}";
@@ -38,12 +39,16 @@
           VCS_UVM_ARGS = "+incdir+${uvm12}/src ${uvm12}/src/uvm.sv ${uvm12}/src/dpi/uvm_dpi.cc -CFLAGS -DVCS";
 
           shellHook = ''
+            export VCS_ARCH_OVERRIDE=linux
+            export VCS_CC="$(command -v gcc)"
+            export VCS_CPP="$(command -v g++)"
+            export VCS_LD="$(command -v g++)"
+
             echo "================= Buckyball Verification Environment Activated ========================="
             echo "Development environment loaded:"
             echo "UVM_HOME: $UVM_HOME"
             echo "UVM_VERSION: $UVM_VERSION"
-            echo "Cargo: $(cargo --version 2>&1 | head -1)"
-            echo "VCS_UVM_ARGS: $VCS_UVM_ARGS"
+            echo "GCC: $(gcc --version 2>&1 | head -1)"
             echo "==========================================================================="
           '';
         };
