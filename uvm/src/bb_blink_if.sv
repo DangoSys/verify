@@ -58,7 +58,15 @@ interface bb_blink_if #(
   logic         bank_write_resp_ok   [OUT_BW];
 
   logic         sub_rob_req_ready;
-  logic         mmio_read_req_ready;
-  logic         mmio_read_resp_valid;
-  logic [  7:0] mmio_read_resp_bits_data;
+  logic         mmio_read_req_ready [4];
+  logic         mmio_read_req_valid [4];
+  logic [ 12:0] mmio_read_req_addr  [4];
+  logic         mmio_read_resp_ready[4];
+  logic         mmio_read_resp_valid[4];
+  logic [  7:0] mmio_read_resp_bits_data[4];
+
+  logic         mmio_write_req_ready[4];
+  logic         mmio_write_req_valid[4];
+  logic [ 12:0] mmio_write_req_addr [4];
+  logic [  7:0] mmio_write_req_data [4];
 endinterface

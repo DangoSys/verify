@@ -3,6 +3,8 @@
 `uvm_analysis_imp_decl(_read)
 `uvm_analysis_imp_decl(_write)
 `uvm_analysis_imp_decl(_resp)
+`uvm_analysis_imp_decl(_mmio_read)
+`uvm_analysis_imp_decl(_mmio_write)
 
 class bb_blink_cmd_item extends uvm_sequence_item;
   rand bit [BB_BLINK_BID_W - 1:0] bid;
@@ -112,6 +114,32 @@ class bb_blink_resp_item extends uvm_sequence_item;
   `uvm_object_utils_end
 
   function new(string name = "bb_blink_resp_item");
+    super.new(name);
+  endfunction
+endclass
+
+class bb_mmio_read_item extends uvm_sequence_item;
+  bit [12:0] addr;
+  int port;
+  `uvm_object_utils_begin(bb_mmio_read_item)
+    `uvm_field_int(addr, UVM_ALL_ON)
+    `uvm_field_int(port, UVM_ALL_ON)
+  `uvm_object_utils_end
+  function new(string name = "bb_mmio_read_item");
+    super.new(name);
+  endfunction
+endclass
+
+class bb_mmio_write_item extends uvm_sequence_item;
+  bit [12:0] addr;
+  bit [7:0] data;
+  int port;
+  `uvm_object_utils_begin(bb_mmio_write_item)
+    `uvm_field_int(addr, UVM_ALL_ON)
+    `uvm_field_int(data, UVM_ALL_ON)
+    `uvm_field_int(port, UVM_ALL_ON)
+  `uvm_object_utils_end
+  function new(string name = "bb_mmio_write_item");
     super.new(name);
   endfunction
 endclass

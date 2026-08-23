@@ -14,6 +14,8 @@ class bb_blink_mem_model #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
   bit was_reset;
   bit rd_curr_valid[IN_BW];
   bit [127:0] rd_curr_data[IN_BW];
+  bit [7:0] mmio_mem[8192];
+  bit mmio_valid[8192];
 
   function new(string name, uvm_component parent);
     super.new(name, parent);
@@ -36,7 +38,15 @@ class bb_blink_mem_model #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
 
   function void clear_mem();
     mem.delete();
+    for (int i = 0; i < 8192; i++) mmio_valid[i] = 1'b0;
     have_stim = 1'b0;
+  endfunction
+
+  function void load_mmio_word(int unsigned addr, bit [31:0] data);
+    for (int i = 0; i < 4; i++) begin
+      mmio_mem[addr + i] = data[i*8 +: 8];
+      mmio_valid[addr + i] = 1'b1;
+    end
   endfunction
 
   function void arm();
@@ -71,15 +81,19 @@ class bb_blink_mem_model #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
           end
           vif.cmd_resp_ready <= 1'b1;
           vif.sub_rob_req_ready <= 1'b1;
-          vif.mmio_read_req_ready <= 1'b1;
-          vif.mmio_read_resp_valid <= 1'b0;
-          vif.mmio_read_resp_bits_data <= '0;
+          for (int i = 0; i < 4; i++) begin
+            vif.mmio_read_req_ready[i] <= 1'b1;
+            vif.mmio_read_resp_valid[i] <= 1'b0;
+            vif.mmio_read_resp_bits_data[i] <= '0;
+            vif.mmio_write_req_ready[i] <= 1'b1;
+          end
         end
         was_reset = 1'b1;
       end else begin
         was_reset = 1'b0;
         handle_read();
         handle_write();
+        handle_mmio();
       end
     end
   endtask
@@ -127,7 +141,6 @@ class bb_blink_mem_model #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
 
       if (IN_BW >= 2) begin
         // Blocking drive of 1-cycle registered resp. Multi-port NBA into
-        // MatrixBall Instantiate hierarchy segfaults VCS.
         vif.bank_read_resp_valid[i] = rd_curr_valid[i];
         vif.bank_read_resp_data[i] <= rd_curr_data[i];
         rd_curr_valid[i] = next_valid;
@@ -160,6 +173,26 @@ class bb_blink_mem_model #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
       end
 
       vif.bank_write_req_ready[i] <= !write_busy[i];
+    end
+  endtask
+
+  task handle_mmio();
+    for (int i = 0; i < 4; i++) begin
+      if (vif.mmio_read_resp_valid[i] && vif.mmio_read_resp_ready[i])
+        vif.mmio_read_resp_valid[i] <= 1'b0;
+      if (!vif.mmio_read_resp_valid[i] &&
+          vif.mmio_read_req_valid[i] && vif.mmio_read_req_ready[i]) begin
+        if (!mmio_valid[int'(vif.mmio_read_req_addr[i])])
+          `uvm_fatal("MMIO", $sformatf("read of unwritten address %0d", vif.mmio_read_req_addr[i]))
+        vif.mmio_read_resp_bits_data[i] <= mmio_mem[int'(vif.mmio_read_req_addr[i])];
+        vif.mmio_read_resp_valid[i] <= 1'b1;
+      end
+      vif.mmio_read_req_ready[i] <= !vif.mmio_read_resp_valid[i];
+      if (vif.mmio_write_req_valid[i] && vif.mmio_write_req_ready[i]) begin
+        mmio_mem[int'(vif.mmio_write_req_addr[i])] = vif.mmio_write_req_data[i];
+        mmio_valid[int'(vif.mmio_write_req_addr[i])] = 1'b1;
+      end
+      vif.mmio_write_req_ready[i] <= 1'b1;
     end
   endtask
 endclass
