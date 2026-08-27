@@ -141,7 +141,7 @@ class bb_blink_mem_model #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
 
       if (IN_BW >= 2) begin
         // Blocking drive of 1-cycle registered resp. Multi-port NBA into
-        vif.bank_read_resp_valid[i] = rd_curr_valid[i];
+        vif.bank_read_resp_valid[i] <= rd_curr_valid[i];
         vif.bank_read_resp_data[i] <= rd_curr_data[i];
         rd_curr_valid[i] = next_valid;
         rd_curr_data[i] = next_data;
