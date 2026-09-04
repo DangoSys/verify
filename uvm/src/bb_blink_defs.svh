@@ -1,3 +1,10 @@
+`ifndef BB_IN_BW
+`error "BB_IN_BW must be provided from chip.pb via +define+BB_IN_BW=<n>"
+`endif
+`ifndef BB_OUT_BW
+`error "BB_OUT_BW must be provided from chip.pb via +define+BB_OUT_BW=<n>"
+`endif
+
 localparam int BB_BLINK_BID_W = 5;
 localparam int BB_BLINK_FUNCT7_W = 7;
 localparam int BB_BLINK_ITER_W = 34;
