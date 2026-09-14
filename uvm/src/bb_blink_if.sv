@@ -40,7 +40,7 @@ interface bb_blink_if #(
   logic [  4:0] bank_read_group_id  [IN_BW];
   logic         bank_read_req_ready [IN_BW];
   logic         bank_read_req_valid [IN_BW];
-  logic [  9:0] bank_read_req_addr  [IN_BW];
+  logic [`BB_BANK_ADDR_W-1:0] bank_read_req_addr  [IN_BW];
   logic         bank_read_resp_ready[IN_BW];
   logic         bank_read_resp_valid[IN_BW];
   logic [127:0] bank_read_resp_data [IN_BW];
@@ -50,7 +50,7 @@ interface bb_blink_if #(
   logic [  4:0] bank_write_group_id  [OUT_BW];
   logic         bank_write_req_ready [OUT_BW];
   logic         bank_write_req_valid [OUT_BW];
-  logic [  9:0] bank_write_req_addr  [OUT_BW];
+  logic [`BB_BANK_ADDR_W-1:0] bank_write_req_addr  [OUT_BW];
   logic [ 15:0] bank_write_req_mask  [OUT_BW];
   logic [127:0] bank_write_req_data  [OUT_BW];
   logic         bank_write_resp_ready[OUT_BW];
