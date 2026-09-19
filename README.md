@@ -37,21 +37,21 @@ clippy
 
 ## Common UVM
 
-Reusable Ball-level UVM pieces live under `uvm/`:
+Reusable Ball-level UVM pieces live under `uvm/src/ball/`:
 
 ```text
-uvm/src/bb_uvm_pkg.sv
-uvm/src/bb_blink_defs.svh
-uvm/src/bb_blink_items.svh
-uvm/src/bb_blink_if.sv
-uvm/src/agents/cmd/bb_blink_cmd_driver.svh
-uvm/src/agents/cmd/bb_blink_cmd_monitor.svh
-uvm/src/agents/cmd/bb_blink_cmd_agent.svh
-uvm/src/agents/mem/bb_blink_mem_model.svh
-uvm/src/agents/mem/bb_blink_mem_monitor.svh
-uvm/src/agents/resp/bb_blink_resp_monitor.svh
-uvm/src/cov/bb_blink_cov.svh
-uvm/src/env/bb_blink_env.svh
+uvm/src/ball/bb_uvm_pkg.sv
+uvm/src/ball/bb_blink_defs.svh
+uvm/src/ball/bb_blink_items.svh
+uvm/src/ball/bb_blink_if.sv
+uvm/src/ball/agents/cmd/bb_blink_cmd_driver.svh
+uvm/src/ball/agents/cmd/bb_blink_cmd_monitor.svh
+uvm/src/ball/agents/cmd/bb_blink_cmd_agent.svh
+uvm/src/ball/agents/mem/bb_blink_mem_model.svh
+uvm/src/ball/agents/mem/bb_blink_mem_monitor.svh
+uvm/src/ball/agents/resp/bb_blink_resp_monitor.svh
+uvm/src/ball/cov/bb_blink_cov.svh
+uvm/src/ball/env/bb_blink_env.svh
 ```
 
 Ball verify filelists should compile `bb_blink_if.sv` and `bb_uvm_pkg.sv` before the
@@ -66,12 +66,12 @@ When compiling `bb_uvm_pkg.sv`, the following `+incdir+` entries are required so
 that the nested `agents/...` includes resolve:
 
 ```text
-+incdir+uvm/src
-+incdir+uvm/src/agents/cmd
-+incdir+uvm/src/agents/mem
-+incdir+uvm/src/agents/resp
-+incdir+uvm/src/cov
-+incdir+uvm/src/env
++incdir+uvm/src/ball
++incdir+uvm/src/ball/agents/cmd
++incdir+uvm/src/ball/agents/mem
++incdir+uvm/src/ball/agents/resp
++incdir+uvm/src/ball/cov
++incdir+uvm/src/ball/env
 ```
 
 `bb_uvm_pkg.sv` includes files in dependency order:
@@ -83,7 +83,7 @@ defs -> items -> cmd driver -> cmd monitor -> cmd agent
 
 ## Ownership: framework vs ball
 
-- **Framework-owned** (`uvm/src/`): everything shipped in this repo. The Blink
+- **Framework-owned** (`uvm/src/ball/`): the shared Ball/Blink framework. The Blink
   transaction items, the `bb_blink_if` interface, the command agent (driver +
   monitor + agent), the bank read/write memory model and monitors, the response
   monitor, the protocol coverage collector (`bb_blink_cov`), and the base
@@ -100,3 +100,8 @@ The base `bb_blink_env` constructs only the protocol-level pieces (cmd agent,
 mem model, read/write/resp monitors, cov) and connects monitor APs to the
 coverage collector. It deliberately leaves scoreboard construction and any
 end-to-end checking to the Ball subclass.
+
+Generic IP-level components live under `uvm/src/ip/`. They operate on UVM
+transaction types and do not contain DUT interfaces, port names, or IP lists.
+Each IP owns its interface, agents, reference-model binding, environment, and
+tests in that IP's source tree.
