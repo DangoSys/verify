@@ -22,7 +22,7 @@ class bb_blink_read_monitor #(int IN_BW = 1, int OUT_BW = 1) extends uvm_monitor
     forever begin
       @(posedge vif.clock);
       for (int i = 0; i < IN_BW; i++) begin
-        if (vif.bank_read_req_valid[i] && vif.bank_read_req_ready[i]) begin
+        if (!vif.reset && vif.bank_read_req_valid[i] && vif.bank_read_req_ready[i]) begin
           item = bb_blink_read_item::type_id::create("item");
           item.bank_id  = vif.bank_read_bank_id[i];
           item.rob_id   = vif.bank_read_rob_id[i];
@@ -60,7 +60,7 @@ class bb_blink_write_monitor #(int IN_BW = 1, int OUT_BW = 1) extends uvm_monito
     forever begin
       @(posedge vif.clock);
       for (int i = 0; i < OUT_BW; i++) begin
-        if (vif.bank_write_req_valid[i] && vif.bank_write_req_ready[i]) begin
+        if (!vif.reset && vif.bank_write_req_valid[i] && vif.bank_write_req_ready[i]) begin
           item = bb_blink_write_item::type_id::create("item");
           item.bank_id  = vif.bank_write_bank_id[i];
           item.rob_id   = vif.bank_write_rob_id[i];
@@ -99,7 +99,7 @@ class bb_mmio_read_monitor #(int IN_BW = 1, int OUT_BW = 1) extends uvm_monitor;
     forever begin
       @(posedge vif.clock);
       for (int i = 0; i < 4; i++) begin
-        if (vif.mmio_read_req_valid[i] && vif.mmio_read_req_ready[i]) begin
+        if (!vif.reset && vif.mmio_read_req_valid[i] && vif.mmio_read_req_ready[i]) begin
           item = bb_mmio_read_item::type_id::create("item");
           item.addr = vif.mmio_read_req_addr[i];
           item.port = i;
@@ -133,7 +133,7 @@ class bb_mmio_write_monitor #(int IN_BW = 1, int OUT_BW = 1) extends uvm_monitor
     forever begin
       @(posedge vif.clock);
       for (int i = 0; i < 4; i++) begin
-        if (vif.mmio_write_req_valid[i] && vif.mmio_write_req_ready[i]) begin
+        if (!vif.reset && vif.mmio_write_req_valid[i] && vif.mmio_write_req_ready[i]) begin
           item = bb_mmio_write_item::type_id::create("item");
           item.addr = vif.mmio_write_req_addr[i];
           item.data = vif.mmio_write_req_data[i];

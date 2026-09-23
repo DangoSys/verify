@@ -22,7 +22,7 @@ class bb_blink_cmd_monitor #(int IN_BW = 1, int OUT_BW = 1) extends uvm_monitor;
     wait (vif.reset === 1'b0);
     forever begin
       @(posedge vif.clock);
-      if (vif.cmd_req_valid && vif.cmd_req_ready) begin
+      if (!vif.reset && vif.cmd_req_valid && vif.cmd_req_ready) begin
         item = bb_blink_cmd_item::type_id::create("item");
         item.bid = vif.cmd_req_bits_cmd_bid;
         item.funct7 = vif.cmd_req_bits_cmd_funct7;

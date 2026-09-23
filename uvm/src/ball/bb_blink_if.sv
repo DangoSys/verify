@@ -16,28 +16,28 @@ interface bb_blink_if #(
   logic         cmd_req_bits_cmd_op1_from_spad;
   logic         cmd_req_bits_cmd_op2_from_spad;
   logic [ 63:0] cmd_req_bits_cmd_special;
-  logic [  4:0] cmd_req_bits_cmd_op1_bank;
-  logic [  4:0] cmd_req_bits_cmd_op2_bank;
-  logic [  4:0] cmd_req_bits_cmd_wr_bank;
-  logic [  4:0] cmd_req_bits_cmd_op1_col;
-  logic [  4:0] cmd_req_bits_cmd_op2_col;
-  logic [  4:0] cmd_req_bits_cmd_wr_col;
-  logic [  4:0] cmd_req_bits_cmd_meta_bank;
+  logic [`BB_BANK_ID_W-1:0] cmd_req_bits_cmd_op1_bank;
+  logic [`BB_BANK_ID_W-1:0] cmd_req_bits_cmd_op2_bank;
+  logic [`BB_BANK_ID_W-1:0] cmd_req_bits_cmd_wr_bank;
+  logic [`BB_GROUP_COUNT_W-1:0] cmd_req_bits_cmd_op1_col;
+  logic [`BB_GROUP_COUNT_W-1:0] cmd_req_bits_cmd_op2_col;
+  logic [`BB_GROUP_COUNT_W-1:0] cmd_req_bits_cmd_wr_col;
+  logic [`BB_BANK_ID_W-1:0] cmd_req_bits_cmd_meta_bank;
   logic [ 63:0] cmd_req_bits_cmd_rs1;
   logic [ 63:0] cmd_req_bits_cmd_rs2;
-  logic [  3:0] cmd_req_bits_rob_id;
+  logic [`BB_ROB_ID_W-1:0] cmd_req_bits_rob_id;
   logic         cmd_req_bits_is_sub;
-  logic [  7:0] cmd_req_bits_sub_rob_id;
+  logic [`BB_SUB_ROB_ID_W-1:0] cmd_req_bits_sub_rob_id;
 
   logic         cmd_resp_ready;
   logic         cmd_resp_valid;
-  logic [  3:0] cmd_resp_bits_rob_id;
+  logic [`BB_ROB_ID_W-1:0] cmd_resp_bits_rob_id;
   logic         cmd_resp_bits_is_sub;
-  logic [  7:0] cmd_resp_bits_sub_rob_id;
+  logic [`BB_SUB_ROB_ID_W-1:0] cmd_resp_bits_sub_rob_id;
 
-  logic [  4:0] bank_read_bank_id   [IN_BW];
-  logic [  3:0] bank_read_rob_id    [IN_BW];
-  logic [  4:0] bank_read_group_id  [IN_BW];
+  logic [`BB_BANK_ID_W-1:0] bank_read_bank_id   [IN_BW];
+  logic [`BB_ROB_ID_W-1:0] bank_read_rob_id    [IN_BW];
+  logic [`BB_GROUP_ID_W-1:0] bank_read_group_id  [IN_BW];
   logic         bank_read_req_ready [IN_BW];
   logic         bank_read_req_valid [IN_BW];
   logic [`BB_BANK_ADDR_W-1:0] bank_read_req_addr  [IN_BW];
@@ -45,9 +45,9 @@ interface bb_blink_if #(
   logic         bank_read_resp_valid[IN_BW];
   logic [127:0] bank_read_resp_data [IN_BW];
 
-  logic [  4:0] bank_write_bank_id   [OUT_BW];
-  logic [  3:0] bank_write_rob_id    [OUT_BW];
-  logic [  4:0] bank_write_group_id  [OUT_BW];
+  logic [`BB_BANK_ID_W-1:0] bank_write_bank_id   [OUT_BW];
+  logic [`BB_ROB_ID_W-1:0] bank_write_rob_id    [OUT_BW];
+  logic [`BB_GROUP_ID_W-1:0] bank_write_group_id  [OUT_BW];
   logic         bank_write_req_ready [OUT_BW];
   logic         bank_write_req_valid [OUT_BW];
   logic [`BB_BANK_ADDR_W-1:0] bank_write_req_addr  [OUT_BW];

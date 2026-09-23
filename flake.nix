@@ -33,6 +33,7 @@
             cc
             pkgs.gnumake
             pkgs.numactl
+            pkgs.patchelf
           ];
 
           UVM_HOME = "${uvm12}";
@@ -44,7 +45,6 @@
             export VCS_CC="$(command -v gcc)"
             export VCS_CPP="$(command -v g++)"
             export VCS_LD="$(command -v g++)"
-            export VCS_RUNTIME_LIBRARY_PATH=${pkgs.glibc}/lib:${pkgs.numactl}/lib:${cc.cc.lib}/lib
 
             echo "================= Buckyball Verification Environment Activated ========================="
             echo "Development environment loaded:"
