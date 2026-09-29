@@ -1,1 +1,1 @@
-ips = ["axis"]
+ips = ["axis", "bank", "cache", "coherence"]

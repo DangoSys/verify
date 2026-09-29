@@ -103,5 +103,17 @@ end-to-end checking to the Ball subclass.
 
 Generic IP-level components live under `uvm/src/ip/`. They operate on UVM
 transaction types and do not contain DUT interfaces, port names, or IP lists.
-Each IP owns its interface, agents, reference-model binding, environment, and
-tests in that IP's source tree.
+They provide the reference-model connection, ordered result checking, explicit
+cancellation of pending expectations on reset, and a test base with a timeout.
+Tests wait for the required number of checked results before completing.
+
+Reusable AXI4-Stream interfaces, items, source agents, monitors, backpressure
+control, assertions, and protocol coverage live under `uvm/src/protocol/axis/`.
+They parameterize the data width and currently carry TDATA, TKEEP, and TLAST.
+Reset during an active source transfer is reported as a failure.
+Each IP owns its DUT wiring, protocol-specific extensions, reference-model
+binding, environment composition, and test scenarios in its source tree.
+An IP filelist can have a matching `.el` file with annotated, instance-scoped
+coverage exclusions. bbdev retains the full report and writes `rtl_raw/` and
+`rtl/` reports for the DUT before and after exclusions. Exclusion checksums
+must match the current database; mismatches require review and fail reporting.
