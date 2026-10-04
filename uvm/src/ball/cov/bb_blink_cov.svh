@@ -6,9 +6,6 @@ class bb_blink_cov #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
   int write_fire_count[OUT_BW];
   int resp_fire_count;
 
-  int cur_read_port;
-  int cur_write_port;
-
   uvm_analysis_imp_cmd #(bb_blink_cmd_item, bb_blink_cov#(IN_BW, OUT_BW)) cmd_imp;
   uvm_analysis_imp_read #(bb_blink_read_item, bb_blink_cov#(IN_BW, OUT_BW)) read_imp;
   uvm_analysis_imp_write #(bb_blink_write_item, bb_blink_cov#(IN_BW, OUT_BW)) write_imp;
@@ -29,14 +26,12 @@ class bb_blink_cov #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
   function void write_read(bb_blink_read_item item);
     if (item.port < 0 || item.port >= IN_BW)
       `uvm_fatal("COV", $sformatf("read item port %0d out of range", item.port))
-    cur_read_port = item.port;
     read_fire_count[item.port]++;
   endfunction
 
   function void write_write(bb_blink_write_item item);
     if (item.port < 0 || item.port >= OUT_BW)
       `uvm_fatal("COV", $sformatf("write item port %0d out of range", item.port))
-    cur_write_port = item.port;
     write_fire_count[item.port]++;
   endfunction
 

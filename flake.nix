@@ -30,6 +30,7 @@
             pkgs.rustc
             pkgs.rustfmt
             pkgs.clippy
+            pkgs.python3
             cc
             pkgs.gnumake
             pkgs.numactl
