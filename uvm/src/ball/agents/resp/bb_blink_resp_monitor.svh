@@ -23,9 +23,7 @@ class bb_blink_resp_monitor #(int IN_BW = 1, int OUT_BW = 1) extends uvm_monitor
       @(posedge vif.clock);
       if (!vif.reset && vif.cmd_resp_valid && vif.cmd_resp_ready) begin
         item = bb_blink_resp_item::type_id::create("item");
-        item.rob_id     = vif.cmd_resp_bits_rob_id;
-        item.is_sub     = vif.cmd_resp_bits_is_sub;
-        item.sub_rob_id = vif.cmd_resp_bits_sub_rob_id;
+        item.rob_id = vif.cmd_resp_bits_rob_id;
         resp_ap.write(item);
       end
     end

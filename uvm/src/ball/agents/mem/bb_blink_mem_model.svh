@@ -80,7 +80,6 @@ class bb_blink_mem_model #(int IN_BW = 1, int OUT_BW = 1) extends uvm_component;
             vif.bank_write_resp_ok[i]    <= 1'b1;
           end
           vif.cmd_resp_ready <= 1'b1;
-          vif.sub_rob_req_ready <= 1'b1;
           for (int i = 0; i < 4; i++) begin
             vif.mmio_read_req_ready[i] <= 1'b1;
             vif.mmio_read_resp_valid[i] <= 1'b0;
