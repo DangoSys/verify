@@ -35,6 +35,20 @@
             pkgs.gnumake
             pkgs.numactl
             pkgs.patchelf
+            pkgs.coreutils
+            (pkgs.writeShellScriptBin "uvm-compile" ''
+              exec vcs -full64 -sverilog -timescale=1ns/1ps \
+                -cc ${cc}/bin/gcc -cpp ${cc}/bin/g++ -ld ${cc}/bin/g++ \
+                +incdir+${uvm12}/src ${uvm12}/src/uvm.sv \
+                ${uvm12}/src/dpi/uvm_dpi.cc -CFLAGS -DVCS "$@"
+            '')
+            (pkgs.writeShellScriptBin "uvm-simulate" ''
+              binary="$1"
+              shift
+              interpreter="$(${pkgs.patchelf}/bin/patchelf --print-interpreter "$binary")"
+              libraries="$(${pkgs.patchelf}/bin/patchelf --print-rpath "$binary")"
+              exec "$interpreter" --library-path "$libraries" "$binary" "$@"
+            '')
           ];
 
           UVM_HOME = "${uvm12}";
