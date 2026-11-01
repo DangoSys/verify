@@ -104,6 +104,28 @@ class access_sequence extends bus_sequence;
     finish_dma(0);
     maintain(0);
     await_complete(0);
+    // A younger range arrives before an older multi-range declaration is sealed.
+    if (`INTERLOCK_MAX_RANGES > 1) begin
+      reserve(0);
+      reserve(1);
+      info(1, 1, 'hD000, L, 1);
+      info(0, 1, 'hE000, L, 0, 0);
+      tick(5);
+      evidence::check(!observed.maintenance_valid, "Younger access passed an incomplete range list");
+      info(0, 1, 'hD000, L, 0, 1);
+      maintain(0);
+      maintain(0);
+      await_grant(0);
+      tick(5);
+      evidence::check(model.grants[1] == 0, "Expanded older range lost its dependency");
+      finish_dma(0);
+      await_complete(0);
+      maintain(1);
+      await_grant(1);
+      finish_dma(1);
+      maintain(1);
+      await_complete(1);
+    end
     reserve(0);
     reserve(1);
     info(1, 1, 'hA000, L, 0);
